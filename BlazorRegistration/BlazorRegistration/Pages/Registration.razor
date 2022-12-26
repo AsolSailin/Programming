@@ -1,0 +1,40 @@
+﻿@page "/registration"
+
+<PageTitle>Personal account</PageTitle>
+
+@using BlazorRegistration.Data
+@using BlazorRegistration.Services
+@inject DataBase dataBase
+
+<h1>Registration</h1>
+
+<EditForm Model="@users" OnValidSubmit="@Reg" class="mx-1 mx-md-4">
+
+<p>Login:</p>
+<input type="" id="Login" @bind-value="@users.Login"/>
+<p>Password:</p>
+<input type="password" id="Password" @bind-value="@users.Password"/>
+<p>Password repeat:</p>
+<input type="password" id="PasswordRepeat" @bind-value="@users.PasswordRepeat"/>
+<p>Surname:</p>
+<input type="text" id="Surname" @bind-value="@users.Surname" />
+<p>Name:</p>
+<input type="text" id="Name" @bind-value="@users.Name" />
+<p>EMail:</p>
+<input type="text" id="EMail" @bind-value="@users.EMail" />
+
+<input type="submit" class="btn btn-primary btn-lg" value="Registration" />
+
+</EditForm>
+
+@code {
+    private User users = new User();
+
+    public void Reg()
+    {
+        if (users.Password == users.PasswordRepeat)
+        {
+            dataBase.AddToDataBase(users);
+        }
+    }
+}

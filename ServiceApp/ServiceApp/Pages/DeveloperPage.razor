@@ -1,0 +1,81 @@
+﻿@page "/developer"
+@using ServiceApp.Services
+@inject FileSystemService fss
+
+<PageTitle>Uploading documents</PageTitle>
+
+<div class="card">
+    <h1 class="card-header">Uploading documents</h1>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Water</th>
+                    <th>Gas</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        @foreach (var name in waterFileNames)
+                        {
+                            <tr>
+                                <td>@name:</td>
+                            </tr>
+                        } 
+                        <InputFile OnChange="@LoadWaterFiles" multiple/>
+                    </td>
+                    <td>
+                        @foreach (var name in gasFileNames)
+                        {
+                            <tr>
+                                <td>@name:</td>
+                            </tr>
+                        }
+                        <InputFile OnChange="@LoadGasFiles" multiple/>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    List<string> waterFileNames = new List<string>();
+    List<string> gasFileNames = new List<string>();
+    List<IBrowserFile> loadedFiles = new List<IBrowserFile>();
+
+    protected override void OnInitialized()
+    {
+        UploadDoc();
+    }
+
+    private void UploadDoc()
+    {
+        waterFileNames = fss.UploadWaterDocuments();
+        gasFileNames = fss.UploadGasDocuments();
+    }
+
+    private async Task LoadWaterFiles(InputFileChangeEventArgs e)
+    {
+        foreach (var file in e.GetMultipleFiles(e.FileCount))
+        {
+            loadedFiles.Add(file);
+            Stream stream = file.OpenReadStream(5000000);
+            await fss.UploadWaterDocumentToDbAsync(stream, file.Name);
+            stream.Dispose();
+        }
+        UploadDoc();
+    }
+    private async Task LoadGasFiles(InputFileChangeEventArgs e)
+    {
+        foreach (var file in e.GetMultipleFiles(e.FileCount))
+        {
+            loadedFiles.Add(file);
+            Stream stream = file.OpenReadStream(5000000);
+            await fss.UploadGasDocumentToDbAsync(stream, file.Name);
+            stream.Dispose();
+        }
+        UploadDoc();
+    }
+}

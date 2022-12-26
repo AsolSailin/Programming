@@ -1,0 +1,60 @@
+﻿@page "/authorization"
+
+<PageTitle>Authorization</PageTitle>
+
+@using ServiceApp.Data
+@using ServiceApp.Services
+@inject DataBase dataBase
+@inject IJSRuntime JS
+@inject ILocalStorageService localStorageService
+@inject NavigationManager navigation
+
+<div class="card">
+    <h1 class="card-header">Authorization</h1>
+    <div class="card-body">
+        <EditForm Model="@user" OnValidSubmit="@LogIn" class="mx-1 mx-md-4">
+            <label>Login:</label><br/>
+            <input type="text" id="Login" @bind-value="@user.Login"/><br/>
+            <label>Password:</label><br/>
+            <input type="password" id="Password" @bind-value="@user.Password"/><br/><br/>
+
+            <input type="submit" class="btn btn-primary btn-lg" value="Log In"/>
+            <p>No account?<NavLink href="registration">Register</NavLink></p>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private Worker user = new Worker();
+
+    public void LogIn()
+    {
+        if (user.Login != null && user.Password != null)
+        {
+            dataBase.CurrentUser = dataBase.FindByCustomerLogin(user.Login);
+            dataBase.CurrentCustomer = (Customer)dataBase.CurrentUser;
+
+            if (dataBase.CurrentUser == null)
+            {
+                dataBase.CurrentUser = dataBase.FindByDesignerLogin(user.Login);
+                dataBase.CurrentDesigner = (Designer)dataBase.CurrentUser;
+            }
+
+            if (dataBase.CurrentUser == null)
+            {
+                dataBase.CurrentUser = dataBase.FindByDeveloperLogin(user.Login);
+                dataBase.CurrentDeveloper = (Developer)dataBase.CurrentUser;
+            }
+
+            if (dataBase.CurrentUser != null && dataBase.CurrentUser.Password == user.Password)
+            {
+                localStorageService.SetAsync<Worker>("Authorization", dataBase.CurrentUser);
+                navigation.NavigateTo("/account");
+            }
+            else
+            {
+                JS.InvokeVoidAsync("alert", "Login or password entered incorrectly");
+            }
+        }
+    }
+}

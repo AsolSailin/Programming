@@ -1,0 +1,18 @@
+﻿@inject NavigationManager navigation
+
+@page "/"
+
+<PageTitle>Index</PageTitle>
+
+<div class="card-header" align="center">
+    <h1>HELLO, YOU ARE WELCOMED BY THE APPLICATION "SERVICE APP"</h1>
+    <button type="submit" class="btn btn-primary btn-lg" @onclick="Start">Start</button>
+</div>
+
+@code {
+
+    public void Start()
+    {
+        navigation.NavigateTo("/authorization");
+    }
+}

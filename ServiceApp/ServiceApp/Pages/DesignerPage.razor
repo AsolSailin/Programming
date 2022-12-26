@@ -1,0 +1,46 @@
+﻿@page "/designer"
+@using ServiceApp.Services
+@inject FileSystemService fss
+
+<PageTitle>Uploading documents</PageTitle>
+
+<div class="card">
+    <h1 class="card-header">Uploading documents</h1>
+    <div class="card-body">
+        <label><b>DesignerDocuments</b></label><br/>
+        @foreach (var name in fileNames)
+        {
+            <p class="mb-0">@name</p>
+        }
+        <br/>
+        <InputFile OnChange="@LoadFiles" multiple/>
+    </div>
+</div>
+
+@code {
+    string? path;
+    List<string> fileNames = new List<string>();
+    List<IBrowserFile> loadedFiles = new List<IBrowserFile>();
+
+    protected override void OnInitialized()
+    {
+        UploadDoc();
+    }
+
+    private void UploadDoc()
+    {
+        fileNames = fss.UploadDesignerDocuments();
+    }
+
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        foreach (var file in e.GetMultipleFiles(e.FileCount))
+        {
+            loadedFiles.Add(file);
+            Stream stream = file.OpenReadStream(5000000);
+            await fss.UploadDesignerDocumentToDbAsync(stream, file.Name);
+            stream.Dispose();
+        }
+        UploadDoc();
+    }
+}

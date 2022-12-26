@@ -1,0 +1,406 @@
+﻿@page "/viewing"
+@using ServiceApp.Data
+@using ServiceApp.Services
+@inject DataBase dataBase
+@inject NavigationManager Navigation
+@inject FileSystemService fss
+@inject ILocalStorageService LocalStorage
+@inject IJSRuntime JS
+
+<PageTitle>Project</PageTitle>
+
+<div class="card">
+    <h4 class="card-header" Color = "black">Информация о проекте</h4>
+    <div class="card-body">
+        <hr>
+            <p>Наименование:  @dataBase.CurrentProject.Name</p>
+            <p>Отрасль:  @dataBase.CurrentProject.Department</p>
+            <p>Заказчик: @dataBase.CurrentProject.Customer</p>
+            <p>Проектировщик:  @dataBase.CurrentProject.Designer</p>
+            <p>Застройщик: @dataBase.CurrentProject.Developer</p>
+        <hr>
+        <h6><b>Необходимые документы</b></h6>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Наименование документа</th>
+                    <th>В первую очередь</th>
+                </tr>
+            </thead>
+            <tbody>
+                @switch (@dataBase.CurrentProject.Department)
+                {
+                    case "Водоснабжение":
+                        @foreach (var doc in dataBase.CurrentProject.WaterDocuments)
+                        {
+                            <tr>
+                                <td>@doc.Key</td>
+                                <td>
+                                     <input type="checkbox" checked = "@doc.Value" disabled="disabled"><label></label>
+                                </td>
+                            </tr>
+                        }
+                        @foreach (var doc in dataBase.CurrentProject.GasDocuments)
+                        {
+                            <tr>
+                                <td>@doc.Key</td>
+                                <td>
+                                     <input type="checkbox" checked = "@doc.Value" disabled="disabled"><label></label>
+                                </td>
+                            </tr>
+                        }
+                    break;
+                    case "Газификация":
+                        @foreach (var doc in dataBase.CurrentProject.WaterDocuments)
+                        {
+                            <tr>
+                                <td>@doc.Key</td>
+                                <td>
+                                     <input type="checkbox" checked = "@doc.Value" disabled="disabled"><label></label>
+                                </td>
+                            </tr>
+                        }
+                        @foreach (var doc in dataBase.CurrentProject.GasDocuments)
+                        {
+                            <tr>
+                                <td>@doc.Key</td>
+                                <td>
+                                     <input type="checkbox" checked = "@doc.Value" disabled="disabled"><label></label>
+                                </td>
+                            </tr>
+                        }
+                    break;
+                }
+            </tbody>
+        </table>
+        @if (dataBase.CurrentUser.WorkerRole != "Developer")
+        {
+            @if (dataBase.CurrentUser.WorkerRole == "Designer")
+            {
+                switch (@dataBase.CurrentProject.Department)
+                {
+                    case "Water":
+                        <h4>Технико-экономические показатели(ТЭП)</h4>
+                        @foreach (var doc in dataBase.CurrentProject.DesignerDocuments)
+                        {
+                            <h5>@doc.Key</h5>
+                            <input value="@doc.Value" @oninput="(e)=> dataBase.CurrentProject.DesignerDocuments[doc.Key] = e.Value.ToString()"></input>                            
+                        }
+                        break;
+                    case "Gas":
+                        <h4>Технико-экономические показатели(ТЭП)</h4>
+                        @foreach (var doc in dataBase.CurrentProject.DesignerDocuments)
+                        {
+                            <h5>@doc.Key</h5>
+                            <input value="@doc.Value" @oninput="(e)=> dataBase.CurrentProject.DesignerDocuments[doc.Key] = e.Value.ToString()"></input>                            
+                        }
+                        <h4>Технико-экономические показатели(ТЭП)</h4>  
+                        @foreach (var doc in dataBase.CurrentProject.DesignerDocuments)
+                        {
+                            <h5>@doc.Key</h5>
+                            <input value="@doc.Value" @oninput="(e)=> dataBase.CurrentProject.DesignerDocuments[doc.Key] = e.Value.ToString()"></input>                            
+                        }
+                        break;
+                }
+                <b></b><br /><br />
+                <InputFile OnChange="@LoadFiles" multiple  />
+                <br />
+            }
+            else
+            {
+                switch (@dataBase.CurrentProject.Department)
+                {
+                    case "Water":
+                        <label><b>Технико-экономические показатели(ТЭП)</b></label><br /><br />
+                        @foreach (var doc in dataBase.CurrentProject.DesignerDocuments)
+                        {
+                            <label>@doc.Key</label>
+                            <label >@doc.Value</label><br />                            
+                        }
+                        break;
+                    case "Gas":
+                        <label><b>Технико-экономические показатели(ТЭП)</b></label><br /><br />
+                        @foreach (var doc in dataBase.CurrentProject.DesignerDocuments)
+                        {
+                            <label>@doc.Key</label>
+                            <label >@doc.Value</label><br />                             
+                        }
+                        <label><b>Технико-экономические показатели(ТЭП)</b></label><br /><br />
+                        @foreach (var doc in dataBase.CurrentProject.DesignerDocuments)
+                        {
+                            <label>@doc.Key</label>
+                            <label >@doc.Value</label><br />                         
+                        }
+                        break;
+                }
+            }
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Наименование документа</th>
+                        <th>Наименование документа</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (dataBase.CurrentProject.LoadedFilesDes is not null)
+                    {
+                        @foreach (var file in dataBase.CurrentProject.LoadedFilesDes)
+                        {
+                            <tr>
+                                <td><b>@file</b></td>
+                                <td> 
+                                    <a href="/files/@file">Просмотреть файл и скачать</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    @if (filesDes is not null)
+                    {
+                        @foreach (var file in filesDes)
+                        {
+                            <tr>
+                                <td><b>@file</b></td>
+                                <td> 
+                                    <a href="/files/@file">Просмотреть файл и скачать</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+            @if (dataBase.CurrentUser.WorkerRole == "Designer")
+            {
+                <button type="submit" class="registerbtn" @onclick="DelNewFilesDes">Удалить все только загруженные файлы</button>
+                <br />
+            }
+            @if (dataBase.CurrentUser.WorkerRole == "Designer")
+            {
+                <button type="submit" class="registerbtn" @onclick="DelEarlyFileDes">Удалить все сохранненые ранее файлы</button>
+                <br />
+            }
+        }
+        @if (dataBase.CurrentUser.WorkerRole != "Designer")
+        {
+            <h6><b>Документы, предоставленные застройщиком</b></h6>
+            @if (dataBase.CurrentUser.WorkerRole == "Developer")
+            {
+                <InputFile OnChange="@LoadFilesByDeveloper" multiple  />
+                <br />
+            }
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Наименование документа</th>
+                        <th>Наименование документа</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (dataBase.CurrentProject.LoadedFilesDev is not null)
+                    {
+                        @foreach (var file in dataBase.CurrentProject.LoadedFilesDev)
+                        {
+                            <tr>
+                                <td><b>@file</b></td>
+                                <td>
+                                    <a href="/files/@file">Просмотреть файл и скачать</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    @if (filesDev is not null)
+                    {
+                        @foreach (var file in filesDev)
+                        {
+                            <tr>
+                                <td><b>@file</b></td>
+                                <td>
+                                    <a href="/files/@file">Просмотреть файл и скачать</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+            @if (dataBase.CurrentUser.WorkerRole == "Developer")
+            {
+                <button type="submit" class="registerbtn" @onclick="DelNewFilesDev">Удлаить все только загруженные файлы</button>
+                <br />
+            }
+            @if (dataBase.CurrentUser.WorkerRole == "Developer")
+            {
+                <button type="submit" class="registerbtn" @onclick="DelEarlyFileDev">Удлаить все сохранненые ранее файлы</button>
+                <br />
+            }
+        }
+        <br />
+        @if (dataBase.CurrentUser.WorkerRole == "Customer")
+        {
+            <button type="submit" class="registerbtn" @onclick="Aprroved">Утвердить</button>
+        }
+        <button type="submit" class="registerbtn" @onclick="Save">Сохранить</button>
+        <button class = "registerbtn" @onclick="GoToProj">Мои проекты</button>
+    </div>
+</div>
+
+@code {
+    List<IBrowserFile> _loadedFilesDev = new();
+    List<IBrowserFile> _loadedFilesDes = new();
+    List<string> filesDes = new List<string>();
+    List<string> filesDev = new List<string>();
+    string comForDes;
+    string comForDev;
+
+    public void GoToProj()
+    {
+        Navigation.NavigateTo("/mainproj");
+    }
+
+    public void DelNewFilesDev()
+    {
+        filesDev.Clear();
+    }
+
+    public void DelNewFilesDes()
+    {
+        filesDes.Clear();
+    }
+
+    public void DelEarlyFileDev()
+    {
+        dataBase.CurrentProject.LoadedFilesDev.Clear();
+    }
+
+    public void DelEarlyFileDes()
+    {
+        dataBase.CurrentProject.LoadedFilesDes.Clear();
+    }
+
+    private void Logouting()
+    {
+        dataBase.CurrentCustomer = null;
+        dataBase.CurrentDesigner = null;
+        dataBase.CurrentDeveloper = null;
+        LocalStorage.RemoveAsync("Autho");
+        LocalStorage.RemoveAsync("string");
+        Navigation.NavigateTo("/");
+        StateHasChanged();
+    }
+
+    public void GoToProfile()
+    {
+        Navigation.NavigateTo("/account");
+    }
+
+    public void Aprroved()
+    {
+        dataBase.CurrentProject.IsApproved = true;
+        switch (dataBase.CurrentProject.Department)
+        {
+            case "Water" :
+                dataBase.ReplaceWater(dataBase.CurrentProject);
+                break;
+            case "Gas" :
+                dataBase.ReplaceGas(dataBase.CurrentProject);
+                break;
+        }
+        filesDes.Clear();
+        filesDev.Clear();
+        Navigation.NavigateTo("/mainproj");
+    }
+
+    public void Save()
+    {
+        switch (dataBase.CurrentProject.Department)
+        {
+            case "Water" :
+                if (dataBase.CurrentUser.WorkerRole == "Developer")
+                {
+                    dataBase.CurrentProject.LoadedFilesDev = new List<string>();  
+                    if (filesDev != null)
+                    {
+                        foreach (var file in filesDev)
+                        {
+                            dataBase.CurrentProject.LoadedFilesDev.Add(file);
+                        }
+                    }                    
+                }
+                if (dataBase.CurrentUser.WorkerRole == "Designer")
+                {
+                    dataBase.CurrentProject.LoadedFilesDes = new List<string>();  
+                    if (filesDes != null)
+                    {
+                        foreach (var file in filesDes)
+                        {
+                            dataBase.CurrentProject.LoadedFilesDes.Add(file);
+                        }
+                    }                 
+                }
+                dataBase.ReplaceWater(dataBase.CurrentProject);
+                break;
+            case "Gas" :
+                if (dataBase.CurrentUser.WorkerRole == "Developer")
+                {
+                    dataBase.CurrentProject.LoadedFilesDev = new List<string>();  
+                    if (filesDev != null)
+                    {
+                        foreach (var file in filesDev)
+                        {
+                            dataBase.CurrentProject.LoadedFilesDev.Add(file);
+                        }
+                    }                    
+                }
+                if (dataBase.CurrentUser.WorkerRole == "Designer")
+                {
+                    dataBase.CurrentProject.LoadedFilesDes = new List<string>();  
+                    if (filesDes != null)
+                    {
+                        foreach (var file in filesDes)
+                        {
+                            dataBase.CurrentProject.LoadedFilesDes.Add(file);
+                        }
+                    }                 
+                }
+                dataBase.ReplaceGas(dataBase.CurrentProject);
+                break;
+        }
+        filesDes.Clear();
+        filesDev.Clear();
+        Navigation.NavigateTo("/personalmain");
+    }
+
+    public void Ok()
+    {
+        Navigation.NavigateTo("/personalmain");
+    }
+
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        _loadedFilesDes.Clear();
+
+        foreach (var file in e.GetMultipleFiles(e.FileCount))
+        {
+            _loadedFilesDes.Add(file);
+            filesDes?.Add(file.Name);
+            Stream stream = file.OpenReadStream();
+            await fss.UploadFileToDb(stream, file.Name);
+            fss.DownloadFileToProject(file);
+            stream.Dispose();
+        }
+    }
+
+
+    private async Task LoadFilesByDeveloper(InputFileChangeEventArgs e)
+    {
+        _loadedFilesDev.Clear();
+
+        foreach (var file in e.GetMultipleFiles(e.FileCount))
+        {
+            _loadedFilesDev.Add(file);
+            filesDev?.Add(file.Name);
+            Stream stream = file.OpenReadStream();
+            await fss.UploadFileToDb(stream, file.Name);
+            fss.DownloadFileToProject(file);
+            stream.Dispose();
+        }
+    }
+}

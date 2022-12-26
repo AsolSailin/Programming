@@ -1,0 +1,46 @@
+﻿@using ServiceApp.Data
+@using ServiceApp.Services
+@inject NavigationManager Navigation
+@inject DataBase dataBase
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Department</th>
+        <th>DocumentName</th>
+        <th>Required</th>
+    </tr>
+        
+    </thead>
+    <tbody>
+    @foreach (var proj in Projects)
+    {
+        <tr>
+            <td @onclick="() => ViewProj(proj)">@proj.Department</td>
+            <td @onclick="() => ViewProj(proj)">@proj.Name</td>
+            <td><input type="checkbox" checked="@proj.IsApproved" disabled="disabled"><label></label></td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@if (dataBase.CurrentCustomer != null)
+{
+    <button class = "registerbtn" @onclick="CreatingProj">Создать Проект</button>
+}
+
+@code {
+    [Parameter]
+    public List<Project>? Projects { get; set; }
+
+    private void CreatingProj()
+    {
+        Navigation.NavigateTo("/project");
+    }
+
+    private void ViewProj(Project project)
+    {
+        dataBase.CurrentProject = project;
+        Navigation.NavigateTo("/viewing");
+    }
+}

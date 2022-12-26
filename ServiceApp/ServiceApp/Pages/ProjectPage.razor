@@ -1,0 +1,247 @@
+﻿@page "/project"
+@using ServiceApp.Services
+@using ServiceApp.Data
+@inject DataBase dataBase
+@inject FileSystemService fss
+
+<PageTitle>Creating a project</PageTitle>
+
+<div class="card">
+    <h1 class="card-header">Creating a project</h1>
+    <div class="card-body">
+        <label>Department: @dataBase.CurrentCustomer.Department</label><br/><br/>
+        <label>ProjectName:</label><br/>
+        <input type="text" id="name" @bind-value="@project.Name" /><br/><br/>
+        <label>DesignerOrganization:</label><br/>
+        <select name="dev" @onchange="DesignerChanged">
+            <option value="-">-</option>
+            @foreach (var des in designers)
+            {
+                <option value="@des.ProjectOrganizationName ">@des.ProjectOrganizationName</option>
+            }
+        </select><br/>
+        <label>DeveloperOrganization:</label><br/>
+        <select name="dev" @onchange="DeveloperChanged">
+            <option value="-">-</option>
+            @foreach (var dev in developers)
+            {
+                <option value="@dev.DeveloperOrganizationName ">@dev.DeveloperOrganizationName</option>
+            }
+        </select><br/><br/>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>DocumentName</th>
+                <th>Required</th>
+                <th>Download</th>
+            </tr>
+            </thead>
+            <tbody>
+            @switch (dataBase.CurrentCustomer.Department)
+            {
+                case "1":
+                    @foreach (var doc in documents.waterDocument)
+                    {
+                        <tr>
+                            <td @onclick="()=>WriteWaterDoc(doc.Key)">@doc.Key</td>
+                            <td>
+                                <input type="checkbox" checked="@doc.Value" ><label></label>
+                            </td>
+                            <td><InputFile OnChange="@Download"/></td>
+                        </tr>
+                    }
+                    @foreach (var doc in documents.designerWaterDocument)
+                    {
+                        <tr>
+                            <td @onclick="()=>WriteDesWaterDoc(doc.Key)">@doc.Key</td>
+                            <td>
+                                <input type="checkbox" checked="@doc.Value"><label></label>
+                            </td>
+                            <td><InputFile OnChange="@Download"/></td>
+                        </tr>
+                    }
+                    break;
+                case "Gas":
+                    @foreach (var doc in documents.gasDocument)
+                    {
+                        <tr>
+                            <td @onclick="()=>WriteGasDoc(doc.Key)">@doc.Key</td>
+                            <td>
+                                <input type="checkbox" checked="@doc.Value"><label></label>
+                            </td>
+                            <td><InputFile OnChange="@Download"/></td>
+                        </tr>
+                    }
+                    @foreach (var doc in documents.designerGasDocument)
+                    {
+                        <tr>
+                            <td @onclick="()=>WriteDesGasDoc(doc.Key)">@doc.Key</td>
+                            <td>
+                                <input type="checkbox" checked="@doc.Value"><label></label>
+                            </td>
+                            <td><InputFile OnChange="@Download"/></td>
+                        </tr>
+                    }
+                    break;
+            }
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-primary btn-lg" @onclick="Save">Save</button>
+    </div>
+</div>
+
+@if (btn)
+{
+    <p>The project is saved</p>
+}
+
+@code {
+    private Project project = new Project();
+    DocumentsList documents = new DocumentsList();
+    List<string> waterFileNames = new List<string>();
+    List<string> gasFileNames = new List<string>();
+    List<IBrowserFile> loadedFiles = new List<IBrowserFile>();
+    List<Designer> designers = new List<Designer>();
+    List<Developer> developers = new List<Developer>();
+    string designer;
+    string developer;
+    bool checkedWaterValue;
+    bool checkedGasValue;
+    bool btn = false;
+    
+    protected override void OnInitialized()
+    {
+        designers = dataBase.ImportAllDesigner();
+        developers = dataBase.ImportAllDeveloper();
+        UploadDoc();
+    }
+    
+
+    public void DesignerChanged(ChangeEventArgs e)
+    {
+        if (e.Value is not null)
+        {
+            designer = e.Value.ToString();
+        }
+    }
+    
+    public void DeveloperChanged(ChangeEventArgs e)
+    {
+        if (e.Value is not null)
+        {
+            developer = e.Value.ToString();
+        }
+    }
+    
+    public void WriteWaterDoc(string key)
+    {
+        checkedWaterValue = !documents.waterDocument[key];
+        documents.waterDocument[key] = checkedWaterValue;
+    }
+
+    public void WriteGasDoc(string key)
+    {
+        checkedGasValue = !documents.gasDocument[key];
+        documents.gasDocument[key] = checkedGasValue;
+    }
+
+    public void WriteDesWaterDoc(string key)
+    {
+        checkedWaterValue = !documents.designerWaterDocument[key];
+        documents.designerWaterDocument[key] = checkedWaterValue;
+    }
+
+    public void WriteDesGasDoc(string key)
+    {
+        checkedGasValue = !documents.designerGasDocument[key];
+        documents.designerGasDocument[key] = checkedGasValue;
+    }
+
+    private void UploadDoc()
+    {
+        waterFileNames = fss.UploadWaterDocuments();
+        gasFileNames = fss.UploadGasDocuments();
+    }
+
+    private async Task Download(InputFileChangeEventArgs e)
+    {
+        foreach (var file in e.GetMultipleFiles(e.FileCount))
+        {
+            loadedFiles.Add(file);
+            Stream stream = file.OpenReadStream(5000000);
+            switch (dataBase.CurrentCustomer.Department)
+            {
+                case "1":
+                    await fss.UploadWaterDocumentToDbAsync(stream, file.Name);
+                    break;
+                case "Gas":
+                    await fss.UploadGasDocumentToDbAsync(stream, file.Name);
+                    break;
+            }
+            stream.Dispose();
+        }
+        UploadDoc();
+    }
+
+    private void Save()
+    {
+        project.Department = dataBase.CurrentCustomer.Department;
+        project.Customer = dataBase.CurrentCustomer.Surname;
+        project.Designer = designer;
+        project.Developer = developer;
+
+        switch (project.Department)
+        {
+            case "1":
+                project.WaterDocuments = documents.waterDocument;
+                project.DesignerDocuments = documents.designerWaterDocument;
+                fss.UploadCustomerDocumentationToDbAsync(project);
+                break;
+            case "Газификация" :
+                project.GasDocuments = documents.gasDocument;
+                project.DesignerDocuments = documents.designerGasDocument;
+                fss.UploadCustomerDocumentationToDbAsync(project);
+                break;
+
+        }
+        btn = true;
+    //Navigation.NavigateTo("/mainproj");
+    }
+    
+    /*private WaterDocument waterDoc = new WaterDocument();
+    private GasDocument gasDoc = new GasDocument();
+    private DesignerDocument designerDoc = new DesignerDocument();
+    private string? waterPath;
+    private string? gasPath;
+    private string? designerPath;
+    List<string> waterFileNames = new List<string>();
+    List<string> gasFileNames = new List<string>();
+    List<string> designerFileNames = new List<string>();*/
+
+    /*protected override void OnInitialized()
+    {
+        UploadDoc();
+    }
+    
+    private void UploadCustomerDocument()
+    {
+        fss.UploadCustomerDocumentationToDbAsync(project);
+        /*fss.UploadCustomerDocumentationToDbAsync(waterDoc);
+        fss.UploadCustomerDocumentationToDbAsync(gasDoc);
+        fss.UploadCustomerDocumentationToDbAsync(designerDoc);#1#
+    }
+
+    private void Download(string name)
+    {
+        waterPath = fss.DownloadWaterDocToLocal(name);
+        gasPath = fss.DownloadGasDocToLocal(name);
+        designerPath = fss.DownloadDesignerDocToLocal(name);
+    }
+
+    private void UploadDoc()
+    {
+        waterFileNames = fss.UploadWaterDocuments();
+        gasFileNames = fss.UploadGasDocuments();
+        designerFileNames = fss.UploadDesignerDocuments();
+    }*/
+}

@@ -1,0 +1,184 @@
+﻿@page "/editing"
+
+<PageTitle>Personal account</PageTitle>
+
+@using ServiceApp.Data
+@using ServiceApp.Services
+@inject IJSRuntime JS
+@inject DataBase dataBase
+
+<div class="card">
+    <h1 class="card-header">Personal account</h1>
+    <div class="card-body">
+        <EditForm Model="@user" OnValidSubmit="@Edit" class="mx-1 mx-md-4">
+            <label>Password:</label><br/>
+            <input type="password" id="Password" @bind-value="@user.Password"/><br/>
+            <label>Password repeat:</label><br/>
+            <input type="password" id="PasswordRepeat" @bind-value="@user.PasswordRepeat"/><br/>
+            <label>Surname:</label><br/>
+            <input type="text" id="Surname" @bind-value="@user.Surname" /><br/>
+            <label>Name:</label><br/>
+            <input type="text" id="Name" @bind-value="@user.Name" /><br/>
+            <label>Patronymic:</label><br/>
+            <input type="text" id="Patronymic" @bind-value="@user.Patronymic" /><br/>
+            <label>EMail:</label><br/>
+            <input type="text" id="EMail" @bind-value="@user.EMail" /><br/>
+            <label>Telephone:</label><br/>
+            <input type="text" id="Telephone" @bind-value="@user.Telephone" /><br/><br/>
+
+            @switch (dataBase.CurrentUser?.WorkerRole)
+            {
+                case "Customer":
+                    <label>Department:</label><br/>
+                    <input type="text" @bind-value="department"/><br/><br/>
+                    break;;
+                case "Designer":
+                    <label>ProjectOrganizationName:</label><br/>
+                    <input type="text" @bind-value="organization"/><br/>
+                    <label>OGRN:</label><br/>
+                    <input type="text" @bind-value="ogrn"/><br/>
+                    <label>INN:</label><br/>
+                    <input type="text" @bind-value="inn"/><br/>
+                    <label>KPP:</label><br/>
+                    <input type="text" @bind-value="kpp"/><br/>
+                    <label>Adress:</label><br/>
+                    <input type="text" @bind-value="adress"/><br/>
+                    <label>Director:</label><br/>
+                    <input type="text" @bind-value="director"/><br/>
+                    <label>ChiefProjectEngineer:</label><br/>
+                    <input type="text" @bind-value="chief"/><br/><br/>
+                    break;
+                case "Developer":
+                    <label>DeveloperOrganizationName:</label><br/>
+                    <input type="text" @bind-value="organization"/><br/>
+                    <label>OGRN:</label><br/>
+                    <input type="text" @bind-value="ogrn"/><br/>
+                    <label>INN:</label><br/>
+                    <input type="text" @bind-value="inn"/><br/>
+                    <label>KPP:</label><br/>
+                    <input type="text" @bind-value="kpp"/><br/>
+                    <label>Adress:</label><br/>
+                    <input type="text" @bind-value="adress"/><br/>
+                    <label>ExecutiveCommitteeHead:</label><br/>
+                    <input type="text" @bind-value="chief"/><br/><br/>
+                    break;
+            }
+            
+            <input type="submit" class="btn btn-primary btn-lg" value="Save" /><br/>
+            
+            @if (btn)
+            {
+                <p>The changes have been saved</p>
+            }
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    //users
+    private Worker user = new Worker();
+    //for customer
+    private string? department;
+    //for designer
+    private string? director;
+    //for designer and developer
+    private string? organization;
+    private string? ogrn;
+    private string? inn;
+    private string? kpp;
+    private string? adress;
+    private string? chief;
+    
+    bool btn = false;
+
+    public void Edit()
+    {
+        switch (dataBase.CurrentUser?.WorkerRole)
+        {
+            case "Customer":
+                Customer customer = new Customer
+                {
+                    WorkerRole = dataBase.CurrentUser?.WorkerRole,
+                    Login = dataBase.CurrentUser?.Login,
+                    Password = user.Password,
+                    PasswordRepeat = user.PasswordRepeat,
+                    Surname = user.Surname,
+                    Name = user.Name,
+                    Patronymic = user.Patronymic,
+                    EMail = user.EMail,
+                    Telephone = user.Telephone,
+                    Department = department
+                };
+                if (customer.Password == customer.PasswordRepeat)
+                {
+                    dataBase.ReplaceCustomerByName(customer.Login, customer);
+                    btn = true;
+                }
+                else
+                {
+                    JS.InvokeVoidAsync("alert", "Passwords don't match");
+                }
+                break;
+            case "Designer":
+                Designer designer = new Designer
+                {
+                    WorkerRole = dataBase.CurrentUser?.WorkerRole,
+                    Login = dataBase.CurrentUser?.Login,
+                    Password = user.Password,
+                    PasswordRepeat = user.PasswordRepeat,
+                    Surname = user.Surname,
+                    Name = user.Name,
+                    Patronymic = user.Patronymic,
+                    EMail = user.EMail,
+                    Telephone = user.Telephone,
+                    ProjectOrganizationName = organization,
+                    OGRN = ogrn,
+                    INN = inn,
+                    KPP = kpp,
+                    Adress = adress,
+                    Director = director,
+                    ChiefProjectEngineer = chief
+                };
+                if (designer.Password == designer.PasswordRepeat)
+                {
+                    dataBase.ReplaceDesignerByName(designer.Name, designer);
+                    btn = true;
+                }
+                else
+                {
+                    JS.InvokeVoidAsync("alert", "Passwords don't match");
+                }
+                break;
+            case "Developer":
+                Developer developer = new Developer
+                {
+                    WorkerRole = dataBase.CurrentUser?.WorkerRole,
+                    Login = dataBase.CurrentUser?.Login,
+                    Password = user.Password,
+                    PasswordRepeat = user.PasswordRepeat,
+                    Surname = user.Surname,
+                    Name = user.Name,
+                    Patronymic = user.Patronymic,
+                    EMail = user.EMail,
+                    Telephone = user.Telephone,
+                    DeveloperOrganizationName = organization,
+                    OGRN = ogrn,
+                    INN = inn,
+                    KPP = kpp,
+                    Adress = adress,
+                    ExecutiveCommitteeHead = chief
+                };
+                if (developer.Password == developer.PasswordRepeat)
+                {
+                    dataBase.ReplaceDeveloperByName(developer.Name, developer);
+                    btn = true;
+                }
+                else
+                {
+                    JS.InvokeVoidAsync("alert", "Passwords don't match");
+                }
+                break;
+        }
+    }
+
+}

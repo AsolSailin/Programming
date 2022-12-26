@@ -1,0 +1,93 @@
+﻿@page "/customer"
+@using ServiceApp.Services
+@using ServiceApp.Data
+@inject DataBase dataBase
+@inject FileSystemService fss
+
+<PageTitle>Uploading documents</PageTitle>
+
+<div class="card">
+    <h1 class="card-header">Uploading documents</h1>
+    <div class="card-body">
+        @*<label>ProjectRole:</label><br/>
+        <input type="text" id="Role" @bind-value="" /><br/>*@
+        <label><b>Water</b></label><br/>
+        @foreach (var name in waterFileNames)
+        {
+            <p class="mb-0">@name:</p>
+            <input type="checkbox" id="approve" @bind-value="@waterDoc.IsApproved" />
+            <label for="approve">Approve</label><br/>
+            <input type="checkbox" id="required" @bind-value="@waterDoc.IsRequired" />
+            <label for="required">Required</label><br/>
+        }
+        <br/><br/><br/>
+        
+        <label><b>Gas</b></label><br/>
+        @foreach (var name in gasFileNames)
+        {
+            <p class="mb-0">@name:</p>
+            <input type="checkbox" id="approve" @bind-value="@gasDoc.IsApproved" />
+            <label for="approve">Approve</label><br/>
+            <input type="checkbox" id="required" @bind-value="@gasDoc.IsRequired" />
+            <label for="required">Required</label><br/>
+        }
+        <br/><br/><br/>
+                
+        <label><b>DesignerDocuments</b></label><br/>
+        @foreach (var name in designerFileNames)
+        {
+            <p class="mb-0">@name:</p>
+            <input type="checkbox" id="approve" @bind-value="@designerDoc.IsApproved" />
+            <label for="approve">Approve</label><br/>
+            <input type="checkbox" id="required" @bind-value="@designerDoc.IsRequired" />
+            <label for="required">Required</label><br/>
+        }
+        <br/>
+        <label>DesignerOrganization:</label><br/>
+        <input type="text" id="organization" @bind-value="@project.designerOrganization" /><br/>
+        <label>DeveloperOrganization:</label><br/>
+        <input type="text" id="organization" @bind-value="@project.developerOrganization" /><br/>
+        <br/>
+        <button type="submit" class="btn btn-primary btn-lg" @onclick="UploadCustomerDocument" >Save</button>
+    </div>
+</div>
+
+@code {
+    private Project project = new Project();
+    private WaterDocument waterDoc = new WaterDocument();
+    private GasDocument gasDoc = new GasDocument();
+    private DesignerDocument designerDoc = new DesignerDocument();
+    private string? waterPath;
+    private string? gasPath;
+    private string? designerPath;
+    List<string> waterFileNames = new List<string>();
+    List<string> gasFileNames = new List<string>();
+    List<string> designerFileNames = new List<string>();
+
+    protected override void OnInitialized()
+    {
+        UploadDoc();
+    }
+    
+    private void UploadCustomerDocument()
+    {
+        fss.UploadCustomerDocumentationToDbAsync(project);
+        /*fss.UploadCustomerDocumentationToDbAsync(waterDoc);
+        fss.UploadCustomerDocumentationToDbAsync(gasDoc);
+        fss.UploadCustomerDocumentationToDbAsync(designerDoc);*/
+    }
+
+    private void Download(string name)
+    {
+        waterPath = fss.DownloadWaterDocToLocal(name);
+        gasPath = fss.DownloadGasDocToLocal(name);
+        designerPath = fss.DownloadDesignerDocToLocal(name);
+    }
+
+    private void UploadDoc()
+    {
+        waterFileNames = fss.UploadWaterDocuments();
+        gasFileNames = fss.UploadGasDocuments();
+        designerFileNames = fss.UploadDesignerDocuments();
+    }
+}

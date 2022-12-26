@@ -1,0 +1,21 @@
+﻿@page "/"
+@using BlazorRegistration.Data
+@using BlazorRegistration.Services
+@inject DataBase dataBase
+@inject ILocalStorageService localStorageService
+<PageTitle>Index</PageTitle>
+
+<h1 align="center">Hello</h1>
+
+@code
+{
+    protected override async Task OnInitializedAsync()
+    {
+        User user = await localStorageService.GetAsync<User>("Authorization");
+        
+        if(user is not null)
+        {
+            dataBase.CurrentUser = user;
+        }
+    }
+}
