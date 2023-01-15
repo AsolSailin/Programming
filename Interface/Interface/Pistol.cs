@@ -22,6 +22,8 @@ namespace AppWithInterface
             Condition = condition;
             BulletsCount = maxBulletsCount;
             MaxBulletsCount = maxBulletsCount;
+            Console.WriteLine($"Pistol. Count of bullets: {BulletsCount}. " +
+                $"Condition: {Condition}. Damage: {GunshotDamage}");
         }
 
         public void SingleShot()
@@ -36,19 +38,19 @@ namespace AppWithInterface
         public void Upgrade()
         {
             GunshotDamage += upgrade;
-            Console.WriteLine($"Pistol is upgraded by {upgrade}");
+            Console.WriteLine($"Pistol is upgraded by {upgrade}. Damage: {GunshotDamage}");
         }
 
         public void Repair()
         {
             Condition += repair;
-            Console.WriteLine($"Pistol is repaired by {repair}. Condition: {Condition}. Damage: {GunshotDamage}");
+            Console.WriteLine($"Pistol is repaired by {repair}. Condition: {Condition}");
         }
 
         public void Reload()
         {
             BulletsCount = MaxBulletsCount;
-            Console.WriteLine($"Pistol is reloaded");
+            Console.WriteLine($"Pistol is reloaded. Count of bullets: {BulletsCount}");
         }
     }
 }

@@ -20,6 +20,7 @@ namespace AppWithInterface
             MeleeDamage = meleeDamage;
             ThrowDamage = throwDamage;
             Condition = condition;
+            Console.WriteLine($"Knife. Condition: {Condition}. Melee damage: {MeleeDamage}. Throw damage: {ThrowDamage}");
         }
 
         public void MeleeHit()

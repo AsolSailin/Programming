@@ -18,6 +18,7 @@ namespace AppWithInterface
         {
             MeleeDamage = meleeDamage;
             Condition = condition;
+            Console.WriteLine($"Sword. Condition: {Condition}. Damage: {MeleeDamage}");
         }   
 
         public void MeleeHit()

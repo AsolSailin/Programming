@@ -19,7 +19,59 @@ namespace AppWithInterface
             Shuriken shuriken = new Shuriken(100);
             Knife knife = new Knife(50, 110, 100);
 
-            shooter.SingleShot(pistol);
+            Console.WriteLine("---");
+
+            var pistolShot = Task.Run(() => shooter.SingleShot(pistol));
+            var machinegunShot = Task.Run(() => shooter.AutoShot(machinegun));
+            Task.WaitAll(pistolShot, machinegunShot);
+
+            Console.WriteLine("---");
+
+            var swordMeleeHit = Task.Run(() => shooter.MeleeHit(sword));
+            var knifeMeleeHit = Task.Run(() => shooter.MeleeHit(knife));
+            Task.WaitAll(swordMeleeHit, knifeMeleeHit);
+
+            Console.WriteLine("---");
+
+            var shurikenThrowHit = Task.Run(() => shooter.ThrowHit(shuriken));
+            var knifeThrowHit = Task.Run(() => shooter.ThrowHit(knife));
+            Task.WaitAll(shurikenThrowHit, knifeThrowHit);
+
+            Console.WriteLine("---");
+
+            pistol.Reload();
+            machinegun.Reload();
+
+            Console.WriteLine("---");
+
+            mechanic.Upgrade(pistol);
+            mechanic.Repair(pistol);
+            mechanic.Upgrade(machinegun);
+            mechanic.Repair(machinegun);
+            mechanic.Upgrade(sword);
+            mechanic.Repair(sword);
+            mechanic.Upgrade(knife);
+            mechanic.Repair(knife);
+
+            Console.WriteLine("---");
+
+            pistolShot= Task.Run(() => shooter.SingleShot(pistol));
+            machinegunShot = Task.Run(() => shooter.AutoShot(machinegun));
+            Task.WaitAll(pistolShot, machinegunShot);
+
+            Console.WriteLine("---");
+
+            swordMeleeHit = Task.Run(() => shooter.MeleeHit(sword));
+            knifeMeleeHit = Task.Run(() => shooter.MeleeHit(knife));
+            Task.WaitAll(swordMeleeHit, knifeMeleeHit);
+
+            Console.WriteLine("---");
+
+            shurikenThrowHit = Task.Run(() => shooter.ThrowHit(shuriken));
+            knifeThrowHit = Task.Run(() => shooter.ThrowHit(knife));
+            Task.WaitAll(shurikenThrowHit, knifeThrowHit);
+
+            /*shooter.SingleShot(pistol);
             shooter.AutoShot(machinegun);
             shooter.MeleeHit(sword);
             shooter.ThrowHit(shuriken);
@@ -49,7 +101,7 @@ namespace AppWithInterface
             shooter.MeleeHit(sword);
             shooter.ThrowHit(shuriken);
             shooter.MeleeHit(knife);
-            shooter.ThrowHit(knife);
+            shooter.ThrowHit(knife);*/
         }
     }
 }

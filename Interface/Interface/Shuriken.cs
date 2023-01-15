@@ -13,6 +13,7 @@ namespace AppWithInterface
         public Shuriken (int throwDamage)
         {
             ThrowDamage = throwDamage;
+            Console.WriteLine($"Shuriken. Damage: {ThrowDamage}");
         }
 
         public void ThrowHit()

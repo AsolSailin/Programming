@@ -22,6 +22,8 @@ namespace AppWithInterface
             Condition = condition;
             BulletsCount = maxBulletsCount;
             MaxBulletsCount = maxBulletsCount;
+            Console.WriteLine($"Machinedun. Count of bullets: {BulletsCount}. " +
+                $"Condition: {Condition}. Damage: {GunshotDamage}");
         }
 
         public void SingleShot()
@@ -57,7 +59,7 @@ namespace AppWithInterface
         public void Reload()
         {
             BulletsCount = MaxBulletsCount;
-            Console.WriteLine($"Machinegun is reloaded");
+            Console.WriteLine($"Machinegun is reloaded. Count of bullets: {BulletsCount}");
         }
     }
 }
