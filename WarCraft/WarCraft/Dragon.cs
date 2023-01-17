@@ -25,7 +25,7 @@ namespace WarCraft
             }
         }
 
-        public override string Attack(int number, Military player1, Military player2)
+        public override string Attack(Military player1, Military player2)
         {
             return $"Dragon attacks with damage {Damage}";
         }

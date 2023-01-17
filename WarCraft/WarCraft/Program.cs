@@ -26,8 +26,8 @@ namespace WarCraft
                 player2 = players[random.Next(players.Count)];
             }
 
-            Console.WriteLine($"Player1: {player1.Name}");
-            Console.WriteLine($"Player2: {player2.Name}");
+            Console.WriteLine($"Player1: {player1.Name} Damage = {player1.Damage}");
+            Console.WriteLine($"Player2: {player2.Name} Damage = {player2.Damage}");
             Console.WriteLine();
 
             Console.WriteLine(blacksmith.Upgrade(player1));
@@ -51,13 +51,58 @@ namespace WarCraft
                 Console.WriteLine($"HP2: {player2.Health}");
                 Console.WriteLine();
 
+                int hit1 = random.Next(1, 3);
+                int hit2 = random.Next(1, 3);
+
+                var attack1 = Task.Run(() =>
+                {
+                    switch (hit1)
+                    {
+                        case 1:
+                            //Console.WriteLine(player1.Attack(player2, player1));
+                            Console.WriteLine($"Hit");
+                            player2.Hit(player1.Damage);
+                            break;
+                        case 2:
+                            //Console.WriteLine(player1.Attack(player2, player1));
+                            Console.WriteLine($"Miss");
+                            break;
+                    }
+                    Thread.Sleep(1000);
+                });
+
+                var attack2 = Task.Run(() =>
+                {
+                    switch (hit2)
+                    {
+                        case 1:
+                            //Console.WriteLine(player2.Attack(player1, player2));
+                            Console.WriteLine($"Hit");
+                            player1.Hit(player2.Damage);
+                            break;
+                        case 2:
+                            //Console.WriteLine(player2.Attack(player1, player2));
+                            Console.WriteLine($"Miss");
+                            break;
+                    }
+                    Thread.Sleep(1000);
+                });
+                Task.WaitAll(attack1, attack2);
+            }
+
+            /*while (!player1.Death() && !player2.Death())
+            {
+                Console.WriteLine($"HP1: {player1.Health}");
+                Console.WriteLine($"HP2: {player2.Health}");
+                Console.WriteLine();
+
                 int attack = random.Next(1, 3);
                 int hit = random.Next(1, 3);
 
                 switch (attack)
                 {
                     case 1:
-                        Console.WriteLine(player1.Attack(attack, player2, player1));
+                        Console.WriteLine(player1.Attack(player2, player1));
                         Thread.Sleep(500);
 
                         switch (hit)
@@ -72,7 +117,7 @@ namespace WarCraft
                         }
                         break;
                     case 2:
-                        Console.WriteLine(player2.Attack(attack, player1, player2));
+                        Console.WriteLine(player2.Attack(player1, player2));
                         Thread.Sleep(500);
 
                         switch (hit)
@@ -87,7 +132,7 @@ namespace WarCraft
                         }
                         break;
                 }
-            }
+            }*/
 
             if (!player1.IsDestroyed)
             {

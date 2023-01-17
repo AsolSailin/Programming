@@ -23,7 +23,7 @@ namespace WarCraft
             ArrowCount += value;
         }
 
-        public override string Attack(int number, Military player1, Military player2) 
+        public override string Attack(Military player1, Military player2) 
         {
             ArrowCount--;
             return $"Archer attacks with damage {Damage}";
