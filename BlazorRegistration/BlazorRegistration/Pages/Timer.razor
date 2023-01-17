@@ -1,0 +1,45 @@
+﻿@page "/timer"
+
+<PageTitle>Timer</PageTitle>
+
+<h3>Timer</h3>
+
+<p>@time</p>
+@if (timeOut)
+{
+    <p>Time out</p>
+}
+else
+{
+    <button type="submit" class="btn btn-primary btn-lg" @onclick="AddMinute">Add minute</button>
+}
+
+@code {
+    public TimeSpan time = new TimeSpan(0, 0, 10);
+    public bool timeOut = false;
+
+    public void AddMinute()
+    {
+        time = time.Add(new TimeSpan(0, 1, 0));
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await StartTimer();
+    }
+
+    public async Task StartTimer()
+    {
+        while (time > TimeSpan.Zero)
+        {
+            await Task.Delay(1000);
+            time = time.Subtract(new TimeSpan(0, 0, 1));
+            StateHasChanged();
+        }
+
+        if (time == TimeSpan.Zero)
+        {
+            timeOut = true;
+        }
+    }
+}

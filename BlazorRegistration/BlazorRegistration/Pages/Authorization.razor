@@ -15,9 +15,17 @@
     <p>Login:</p>
     <input type="" id="Login" @bind-value="@user.Login"/>
     <p>Password:</p>
-    <input type="password" id="Password" @bind-value="@user.Password"/>
+    <input type="password" id="Password" @bind-value="@user.Password"/><br/><br/>
 
-    <input type="submit" class="btn btn-primary btn-lg" value="Log In" />
+
+    @if (loading)
+    {
+        <input class="btn btn-primary btn-lg" value="Loading..." />
+    }
+    else
+    {
+        <input type="submit" class="btn btn-primary btn-lg" value="Log In"/>
+    }
 
     @if (dataBase.CurrentUser is not null)
     {
@@ -29,16 +37,19 @@
 
 @code {
     private User user = new User();
+    public bool loading = false;
 
-    public void LogIn()
+    public async Task LogIn()
     {
         if (user.Login != null && user.Password != null)
         {
-            dataBase.CurrentUser = dataBase.FindByLogin(user.Login);
-            
+            loading = true;
+            dataBase.CurrentUser = await dataBase.FindByLoginAsync(user.Login);
+            loading = false;
             if (dataBase.CurrentUser != null)
             {
                 localStorageService.SetAsync<User>("Authorization", dataBase.CurrentUser);
+                JS.InvokeVoidAsync("alert", "Authorization was successful");
             }
             else
             {
