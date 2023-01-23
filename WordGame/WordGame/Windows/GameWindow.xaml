@@ -1,0 +1,78 @@
+﻿<Window x:Class="WordGame.Windows.GameWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WordGame.Windows"
+        mc:Ignorable="d"
+        Title="GameWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.3*"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="1.5*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="0.1*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Width="150">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="Lifes: " FontSize="17"></TextBlock>
+                <TextBlock x:Name="tbLifes" FontSize="17"></TextBlock>
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Width="150">
+            <Button Height="30" Click="CheckBtn_Click" Content="Check">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="20"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            
+            <Button Height="30" Click="RemoveBtn_Click" Content="Remove">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="20"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            
+            <TextBlock Background="#b3ffe5"></TextBlock>
+            <TextBlock Background="#b3ffe5"></TextBlock>
+            
+            <Button x:Name="btnNext" Height="30" Click="NextBtn_Click" Content="Next" IsEnabled="False">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="20"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            
+            <Button Height="30" Click="BackBtn_Click" Content="Back">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="20"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.Column="1" Height="100" VerticalAlignment="Top">
+            <TextBlock x:Name="tbDescription" Height="100" FontSize="17" Background="#b3ffe5" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"></TextBlock>
+        </StackPanel>
+
+        <StackPanel x:Name="spAnswer" Grid.Row="1" Grid.Column="1" Height="100" Orientation="Horizontal"></StackPanel>
+
+        <StackPanel  Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom" >
+            <StackPanel x:Name="spLetters1" Orientation="Horizontal"/>
+            <StackPanel x:Name="spLetters2" Orientation="Horizontal"/>
+            <StackPanel x:Name="spLetters3" Orientation="Horizontal"/>
+            <StackPanel x:Name="spLetters4" Orientation="Horizontal"/>
+        </StackPanel>
+    </Grid>
+</Window>
