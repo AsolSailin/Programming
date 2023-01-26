@@ -98,6 +98,7 @@ namespace WordGame.Windows
 
         private void KeyBtn_Click(object sender, RoutedEventArgs e)
         {
+            completed = false;
             var button = (Button)sender;
 
             if (button.IsEnabled)
@@ -173,7 +174,6 @@ namespace WordGame.Windows
             if (completed)
             {
                 click = 0;
-                completed = false;
                 tbDescription.Text = "";
                 spAnswer.Children.Clear();
                 spLetters1.Children.Clear();
