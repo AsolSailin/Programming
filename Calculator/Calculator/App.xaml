@@ -1,0 +1,36 @@
+﻿<Application x:Class="Calculator.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Calculator"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#75c1ff"/>
+            <Setter Property="BorderBrush" Value="#005da8"/>
+            <Setter Property="BorderThickness" Value="1.7"/>
+            <Setter Property="Foreground" Value="#005da8"/>
+            <Setter Property="Margin" Value="7,7,7,7"/>
+            <Setter Property="FontSize" Value="17"/>
+        </Style>
+        <Style TargetType="Border">
+            <Setter Property="CornerRadius" Value="10"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#a8d8ff"/>
+            <Setter Property="Foreground" Value="#005da8"/>
+            <Setter Property="BorderBrush" Value="#005da8"/>
+            <Setter Property="FontSize" Value="30"/>
+        </Style>
+        <Style TargetType="RadioButton">
+            <Setter Property="Background" Value="#75c1ff"/>
+            <Setter Property="Foreground" Value="#005da8"/>
+            <Setter Property="FontSize" Value="17"/>
+        </Style>
+        <Style TargetType="Grid">
+            <Setter Property="Background" Value="#dbefff"/>
+        </Style>
+        <Style TargetType="StackPanel">
+            <Setter Property="Background" Value="#dbefff"/>
+        </Style>
+    </Application.Resources>
+</Application>
