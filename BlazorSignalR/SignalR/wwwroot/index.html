@@ -2,15 +2,17 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Metanit.com</title>
+    <title>Index</title>
 </head>
 <body>
     <div>
-        Введите логин:<br />
+        Mail:<br />
+        <input type="text" id="mail" /><br /><br />
+        Name:<br />
         <input id="userName" type="text" /><br /><br />
-        Введите сообщение:<br />
+        Message:<br />
         <input type="text" id="message" /><br /><br />
-        <input type="button" id="sendBtn" value="Отправить" disabled="disabled" />
+        <input type="button" id="sendBtn" value="Send" disabled="disabled" />
     </div>
     <div id="chatroom"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
@@ -21,21 +23,26 @@
         document.getElementById("sendBtn").addEventListener("click", function () {
             const userName = document.getElementById("userName").value;   // получаем введенное имя
             const message = document.getElementById("message").value;
+            const mail = document.getElementById("mail").value;
 
-            hubConnection.invoke("Send", message, userName) // отправка данных серверу
+            hubConnection.invoke("Send", message, userName, mail) // отправка данных серверу
                 .catch(function (err) {
                     return console.error(err.toString());
                 });
         });
         // получение данных с сервера
-        hubConnection.on("Receive", function (message, userName) {
+        hubConnection.on("Receive", function (message, userName, mail) {
 
             // создаем элемент <b> для имени пользователя
-            const userNameElem = document.createElement("b");
+            const mailElem = document.createElement("b");
+            mailElem.textContent = `${mail} `;
+
+            const userNameElem = document.createElement("m");
             userNameElem.textContent = `${userName}: `;
 
             // создает элемент <p> для сообщения пользователя
             const elem = document.createElement("p");
+            elem.appendChild(mailElem);
             elem.appendChild(userNameElem);
             elem.appendChild(document.createTextNode(message));
 

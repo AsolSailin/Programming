@@ -5,19 +5,15 @@
 
 <PageTitle>Index</PageTitle>
 
-<div class="form-group">
-    <label>
-        User:
-        <input @bind="userInput" />
-    </label>
+<div>
+    Mail:<br />
+    <input id="userName" type="text" @bind="mailInput" /><br /><br />
+    Name:<br />
+    <input id="userName" type="text" @bind="userInput" /><br /><br />
+    Message:<br />
+    <input type="text" id="message" @bind="messageInput" /><br /><br />
+    <button @onclick="Send" disabled="@(!IsConnected)">Send</button>
 </div>
-<div class="form-group">
-    <label>
-        Message:
-        <input @bind="messageInput" size="50" />
-    </label>
-</div>
-<button @onclick="Send" disabled="@(!IsConnected)">Send</button>
 
 <hr>
 
@@ -33,6 +29,7 @@
     private List<string> messages = new List<string>();
     private string? userInput;
     private string? messageInput;
+    private string? mailInput;
 
     protected override async Task OnInitializedAsync()
     {
@@ -40,9 +37,9 @@
             .WithUrl(Navigation.ToAbsoluteUri("https://localhost:7007/chat"))
             .Build();
 
-        hubConnection.On<string, string>("Receive", (message, user) =>
+        hubConnection.On<string, string, string>("Receive", (message, user, mail) =>
         {
-            var encodedMsg = $"{user}: {message}";
+            var encodedMsg = $"{mail} {user}: {message}";
             messages.Add(encodedMsg);
             InvokeAsync(StateHasChanged);
         });
@@ -54,7 +51,7 @@
     {
         if (hubConnection is not null)
         {
-            await hubConnection.SendAsync("Send", messageInput, userInput);
+            await hubConnection.SendAsync("Send", messageInput, userInput, mailInput);
         }
     }
 
