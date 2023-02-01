@@ -73,10 +73,9 @@
         <Button x:Name="OneDividedByXBtn" Content="1/x" Grid.Row="6" Grid.Column="8" Click="OneDividedByXBtn_Click"/>
         <Button x:Name="EquallyBtn" Content="=" Grid.Row="7" Grid.Column="8" Grid.RowSpan="2" Click="EquallyBtn_Click"/>
 
-        <TextBox x:Name="TextNumber" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="7" IsEnabled="False"/>
-        <TextBox x:Name="TextNumber2" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="7" IsEnabled="False"/>
+        <TextBox x:Name="TextNumber" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="7" Grid.RowSpan="2" IsEnabled="False" VerticalContentAlignment="Center" FontSize="65"/>
 
-        <RadioButton x:Name="DegreesBtn" Content="Degrees" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" IsChecked="True" VerticalAlignment="Center" HorizontalAlignment="Center" Checked="DegreesBtn_Checked"/>
-        <RadioButton x:Name="RadiansBtn" Content="Radians" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" VerticalAlignment="Center" HorizontalAlignment="Center" Checked="RadiansBtn_Checked"/>
+        <RadioButton x:Name="DegreesBtn" Content="Degrees" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" IsChecked="True" VerticalAlignment="Center" HorizontalAlignment="Center" Checked="RadioBtn_Checked"/>
+        <RadioButton x:Name="RadiansBtn" Content="Radians" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" VerticalAlignment="Center" HorizontalAlignment="Center" Checked="RadioBtn_Checked"/>
     </Grid>
 </Window>
