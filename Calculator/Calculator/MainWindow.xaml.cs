@@ -284,7 +284,14 @@ namespace Calculator
 
         private void PiBtn_Click(object sender, RoutedEventArgs e)
         {
-            TextNumber.Text = Math.Round(Math.PI, 5).ToString();
+            if (TextNumber.Text == "")
+            {
+                TextNumber.Text = Math.Round(Math.PI, 5).ToString();
+            }
+            else
+            {
+                TextNumber.Text = Math.Round((Convert.ToDouble(TextNumber.Text) * Math.PI), 5).ToString();
+            }
         }
 
         private void SinBtn_Click(object sender, RoutedEventArgs e)
