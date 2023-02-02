@@ -30,6 +30,24 @@ namespace Calculator
         {
             try
             {
+                if (TextNumber.Text.Contains("SIN(") ||
+                    TextNumber.Text.Contains("COS(") ||
+                    TextNumber.Text.Contains("TAN(") ||
+                    TextNumber.Text.Contains("SINH(") ||
+                    TextNumber.Text.Contains("COSH(") ||
+                    TextNumber.Text.Contains("TANH(") ||
+                    TextNumber.Text.Contains("LN(") ||
+                    TextNumber.Text.Contains("LOG(") ||
+                    TextNumber.Text.Contains("10^(") ||
+                    TextNumber.Text.Contains("SQRT(") ||
+                    TextNumber.Text.Contains("1/("))
+                {
+                    if (TextNumber.Text.EndsWith(')'))
+                    {
+                        TextNumber.Text = TextNumber.Text[..^1];
+                    }
+                    TextNumber.Text += ')';
+                }
                 TextNumber.Text = Math.Round(Dangl.Calculator.Calculator.Calculate(TextNumber.Text).Result, 5).ToString();
             }
             catch
@@ -48,6 +66,10 @@ namespace Calculator
         {
             TextNumber.Text += (string)((Button)sender).Content;
         }
+        private void CommaBtn_Click(object sender, RoutedEventArgs e)
+        {
+            TextNumber.Text += (string)((Button)sender).Content;
+        }
 
         private void OpeningBracketBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -57,17 +79,7 @@ namespace Calculator
         private void ClosingBracketBtn_Click(object sender, RoutedEventArgs e)
         {
             if (TextNumber.Text.Contains('('))
-            {
                 TextNumber.Text += (string)((Button)sender).Content;
-            }
-        }
-        private void CommaBtn_Click(object sender, RoutedEventArgs e)
-        {
-
-            if (!TextNumber.Text.Contains(','))
-            {
-                TextNumber.Text += (string)((Button)sender).Content;
-            }
         }
 
         private void DeleteBtn_Click(object sender, RoutedEventArgs e)
@@ -109,7 +121,14 @@ namespace Calculator
         {
             try
             {
-                TextNumber.Text = Factorial(int.Parse(TextNumber.Text)).ToString();
+                if(int.Parse(TextNumber.Text) >= 0)
+                {
+                    TextNumber.Text = Factorial(int.Parse(TextNumber.Text)).ToString();
+                }
+                else
+                {
+                    TextNumber.Text = "Error!";
+                }
             }
             catch
             {
@@ -120,7 +139,7 @@ namespace Calculator
 
         private int Factorial(int n)
         {
-            if (n == 1)
+            if (n == 1 || n == 0)
                 return 1;
 
             return n * Factorial(n - 1);
@@ -130,7 +149,7 @@ namespace Calculator
         {
             try
             {
-                TextNumber.Text = (-(Convert.ToDouble(TextNumber.Text))).ToString();
+                TextNumber.Text = (-(Dangl.Calculator.Calculator.Calculate(TextNumber.Text).Result)).ToString();
             }
             catch
             {
@@ -143,12 +162,15 @@ namespace Calculator
         {
             try
             {
-                TextNumber.Text = Math.Round((1 / Convert.ToDouble(TextNumber.Text)), 5).ToString();
+                if (TextNumber.Text == "")
+                    TextNumber.Text = "1/(";
+                else
+                    TextNumber.Text = Math.Round((1 / Dangl.Calculator.Calculator.Calculate(TextNumber.Text).Result), 5).ToString();
             }
             catch
             {
                 //Exception
-                TextNumber.Text = "1/";
+                TextNumber.Text = "Error!";
             }
         }
 
@@ -156,88 +178,77 @@ namespace Calculator
         {
             try
             {
-                TextNumber.Text = Math.Round((1 / Convert.ToDouble(TextNumber.Text)), 5).ToString();
-            }
-            catch
-            {
-                //Exception
-                TextNumber.Text = "1/";
-            }
-        }
-
-        private void PercentBtn_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                TextNumber.Text = Math.Round((Convert.ToDouble(TextNumber.Text) / 100), 5).ToString();
+                if (TextNumber.Text == "")
+                    TextNumber.Text = "1/(";
+                else
+                    TextNumber.Text = Math.Round((1 / Dangl.Calculator.Calculator.Calculate(TextNumber.Text).Result), 5).ToString();
             }
             catch
             {
                 //Exception
                 TextNumber.Text = "Error!";
             }
+        }
+
+        private void PercentBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (TextNumber.Text == "")
+                TextNumber.Text = "Error!";
+            else
+                TextNumber.Text = Math.Round((Dangl.Calculator.Calculator.Calculate(TextNumber.Text).Result / 100), 5).ToString();
         }
 
         private void SquareRootBtn_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                TextNumber.Text = Math.Round(Math.Sqrt(Convert.ToDouble(TextNumber.Text)), 5).ToString();
+                if (TextNumber.Text == "")
+                    TextNumber.Text = "SQRT(";
+                else
+                    TextNumber.Text = Math.Round(Math.Sqrt(Dangl.Calculator.Calculator.Calculate(TextNumber.Text).Result), 5).ToString();
             }
             catch
             {
                 //Exception
-                TextNumber.Text = "SQRT";
+                TextNumber.Text = "Error!";
             }
         }
         private void CubicRootBtn_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                TextNumber.Text = Math.Round(Math.Pow(Convert.ToDouble(TextNumber.Text), 1 / 3f), 5).ToString();
-            }
-            catch
-            {
-                //Exception
+            if (TextNumber.Text == "")
                 TextNumber.Text = "Error!";
-            }
+            else
+                TextNumber.Text = Math.Round(Math.Pow(Dangl.Calculator.Calculator.Calculate(TextNumber.Text).Result, 1 / 3f), 5).ToString();
         }
 
         private void SquareBtn_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                TextNumber.Text = Math.Round(Math.Pow(Convert.ToDouble(TextNumber.Text), 2), 5).ToString();
-            }
-            catch
-            {
-                //Exception
+            if (TextNumber.Text == "")
                 TextNumber.Text = "Error!";
-            }
+            else
+                TextNumber.Text = Math.Round(Math.Pow(Dangl.Calculator.Calculator.Calculate(TextNumber.Text).Result, 2), 5).ToString();
         }
 
         private void CubeBtn_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                TextNumber.Text = Math.Round(Math.Pow(Convert.ToDouble(TextNumber.Text), 3), 5).ToString();
-            }
-            catch
-            {
-                //Exception
+            if (TextNumber.Text == "")
                 TextNumber.Text = "Error!";
-            }
+            else
+                TextNumber.Text = Math.Round(Math.Pow(Dangl.Calculator.Calculator.Calculate(TextNumber.Text).Result, 3), 5).ToString();
         }
         private void DegreeOfTenBtn_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                TextNumber.Text = Math.Round(Math.Pow(10, Convert.ToDouble(TextNumber.Text)), 5).ToString();
+                if (TextNumber.Text == "")
+                    TextNumber.Text = "10^(";
+                else
+                    TextNumber.Text = Math.Round(Math.Pow(10, Dangl.Calculator.Calculator.Calculate(TextNumber.Text).Result), 5).ToString();
             }
             catch
             {
                 //Exception
-                TextNumber.Text = "10^";
+                TextNumber.Text = "Error!";
             }
         }
 
@@ -245,12 +256,15 @@ namespace Calculator
         {
             try
             {
-                TextNumber.Text = Math.Round(Math.Log10(Convert.ToDouble(TextNumber.Text)), 5).ToString();
+                if (TextNumber.Text == "")
+                    TextNumber.Text = "LOG(";
+                else
+                    TextNumber.Text = Math.Round(Math.Log10(Dangl.Calculator.Calculator.Calculate(TextNumber.Text).Result), 5).ToString();
             }
             catch
             {
                 //Exception
-                TextNumber.Text = "LOG";
+                TextNumber.Text = "Error!";
             }
         }
 
@@ -258,12 +272,15 @@ namespace Calculator
         {
             try
             {
-                TextNumber.Text = Math.Round(Math.Log(Convert.ToDouble(TextNumber.Text)), 5).ToString();
+                if (TextNumber.Text == "")
+                    TextNumber.Text = "LN(";
+                else
+                    TextNumber.Text = Math.Round(Math.Log(Dangl.Calculator.Calculator.Calculate(TextNumber.Text).Result), 5).ToString();
             }
             catch
             {
                 //Exception
-                TextNumber.Text = "LN";
+                TextNumber.Text = "Error!";
             }
         }
 
@@ -275,9 +292,7 @@ namespace Calculator
         private static double ConvertDegreesAndRadians(double measurement)
         {
             if (degreesOrRadians == "Degrees")
-            {
                 return measurement;
-            }
 
             return measurement * (Math.PI / 180);
         }
@@ -285,25 +300,24 @@ namespace Calculator
         private void PiBtn_Click(object sender, RoutedEventArgs e)
         {
             if (TextNumber.Text == "")
-            {
                 TextNumber.Text = Math.Round(Math.PI, 5).ToString();
-            }
-            else
-            {
+            else 
                 TextNumber.Text = Math.Round((Convert.ToDouble(TextNumber.Text) * Math.PI), 5).ToString();
-            }
         }
 
         private void SinBtn_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                TextNumber.Text = Math.Round(Math.Sin(ConvertDegreesAndRadians(Convert.ToDouble(TextNumber.Text))), 5).ToString();
+                if (TextNumber.Text == "")
+                    TextNumber.Text = "SIN(";
+                else
+                    TextNumber.Text = Math.Round(Math.Sin(ConvertDegreesAndRadians(Dangl.Calculator.Calculator.Calculate(TextNumber.Text).Result)), 5).ToString();
             }
             catch
             {
                 //Exception
-                TextNumber.Text = "SIN";
+                TextNumber.Text = "Error!";
             }
         }
 
@@ -311,12 +325,15 @@ namespace Calculator
         {
             try
             {
-                TextNumber.Text = Math.Round(Math.Cos(ConvertDegreesAndRadians(Convert.ToDouble(TextNumber.Text))), 5).ToString();
+                if (TextNumber.Text == "")
+                    TextNumber.Text = "COS(";
+                else
+                    TextNumber.Text = Math.Round(Math.Cos(ConvertDegreesAndRadians(Dangl.Calculator.Calculator.Calculate(TextNumber.Text).Result)), 5).ToString();
             }
             catch
             {
                 //Exception
-                TextNumber.Text = "COS";
+                TextNumber.Text = "Error!";
             }
         }
 
@@ -324,12 +341,15 @@ namespace Calculator
         {
             try
             {
-                TextNumber.Text = Math.Round(Math.Tan(ConvertDegreesAndRadians(Convert.ToDouble(TextNumber.Text))), 5).ToString();
+                if (TextNumber.Text == "")
+                    TextNumber.Text = "TAN(";
+                else
+                    TextNumber.Text = Math.Round(Math.Tan(ConvertDegreesAndRadians(Dangl.Calculator.Calculator.Calculate(TextNumber.Text).Result)), 5).ToString();
             }
             catch
             {
                 //Exception
-                TextNumber.Text = "TAN";
+                TextNumber.Text = "Error!";
             }
         }
 
@@ -337,12 +357,15 @@ namespace Calculator
         {
             try
             {
-                TextNumber.Text = Math.Round(Math.Sinh(ConvertDegreesAndRadians(Convert.ToDouble(TextNumber.Text))), 5).ToString();
+                if (TextNumber.Text == "")
+                    TextNumber.Text = "SINH(";
+                else
+                    TextNumber.Text = Math.Round(Math.Sinh(ConvertDegreesAndRadians(Dangl.Calculator.Calculator.Calculate(TextNumber.Text).Result)), 5).ToString();
             }
             catch
             {
                 //Exception
-                TextNumber.Text = "SINH";
+                TextNumber.Text = "Error!";
             }
         }
 
@@ -350,12 +373,15 @@ namespace Calculator
         {
             try
             {
-                TextNumber.Text = Math.Round(Math.Cosh(ConvertDegreesAndRadians(Convert.ToDouble(TextNumber.Text))), 5).ToString();
+                if (TextNumber.Text == "")
+                    TextNumber.Text = "COSH(";
+                else
+                    TextNumber.Text = Math.Round(Math.Cosh(ConvertDegreesAndRadians(Dangl.Calculator.Calculator.Calculate(TextNumber.Text).Result)), 5).ToString();
             }
             catch
             {
                 //Exception
-                TextNumber.Text = "COSH";
+                TextNumber.Text = "Error!";
             }
         }
 
@@ -363,12 +389,15 @@ namespace Calculator
         {
             try
             {
-                TextNumber.Text = Math.Round(Math.Tanh(ConvertDegreesAndRadians(Convert.ToDouble(TextNumber.Text))), 5).ToString();
+                if (TextNumber.Text == "")
+                    TextNumber.Text = "TANH(";
+                else
+                    TextNumber.Text = Math.Round(Math.Tanh(ConvertDegreesAndRadians(Dangl.Calculator.Calculator.Calculate(TextNumber.Text).Result)), 5).ToString();
             }
             catch
             {
                 //Exception
-                TextNumber.Text = "TANH";
+                TextNumber.Text = "Error!";
             }
         }
     }
