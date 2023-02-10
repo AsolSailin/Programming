@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -121,9 +122,9 @@ namespace Calculator
         {
             try
             {
-                if(int.Parse(TextNumber.Text) >= 0)
+                if (BigInteger.Parse(TextNumber.Text) >= 0)
                 {
-                    TextNumber.Text = Factorial(int.Parse(TextNumber.Text)).ToString();
+                    TextNumber.Text = Factorial(BigInteger.Parse(TextNumber.Text)).ToString();
                 }
                 else
                 {
@@ -132,18 +133,19 @@ namespace Calculator
             }
             catch
             {
-                //Exception
+                //Exception 
                 TextNumber.Text = "Error!";
             }
         }
 
-        private int Factorial(int n)
+        private BigInteger Factorial(BigInteger n)
         {
             if (n == 1 || n == 0)
                 return 1;
 
             return n * Factorial(n - 1);
         }
+
 
         private void PlusMinusBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -218,8 +220,9 @@ namespace Calculator
             if (TextNumber.Text == "")
                 TextNumber.Text = "Error!";
             else
-                TextNumber.Text = Math.Round(Math.Pow(Dangl.Calculator.Calculator.Calculate(TextNumber.Text).Result, 1 / 3f), 5).ToString();
+                TextNumber.Text = Math.Round(Math.Sign(Dangl.Calculator.Calculator.Calculate(TextNumber.Text).Result) * Math.Pow(Math.Abs(Dangl.Calculator.Calculator.Calculate(TextNumber.Text).Result), 1 / 3.0), 5).ToString();
         }
+
 
         private void SquareBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -301,7 +304,7 @@ namespace Calculator
         {
             if (TextNumber.Text == "")
                 TextNumber.Text = Math.Round(Math.PI, 5).ToString();
-            else 
+            else
                 TextNumber.Text = Math.Round((Convert.ToDouble(TextNumber.Text) * Math.PI), 5).ToString();
         }
 
@@ -400,5 +403,22 @@ namespace Calculator
                 TextNumber.Text = "Error!";
             }
         }
+
+        private void ExpBtn_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (TextNumber.Text == "")
+                    TextNumber.Text = "EXP(";
+                else
+                    TextNumber.Text = Math.Round(Math.Exp(Dangl.Calculator.Calculator.Calculate(TextNumber.Text).Result), 5).ToString();
+            }
+            catch
+            {
+                //Exception 
+                TextNumber.Text = "Error!";
+            }
+        }
+
     }
 }

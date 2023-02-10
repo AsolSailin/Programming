@@ -33,7 +33,7 @@
         <Button x:Name="SinhBtn" Content="sinh" Grid.Row="5" Grid.Column="0" Click="SinhBtn_Click"/>
         <Button x:Name="CoshBtn" Content="cosh" Grid.Row="6" Grid.Column="0" Click="CoshBtn_Click"/>
         <Button x:Name="TanhBtn" Content="tanh" Grid.Row="7" Grid.Column="0" Click="TanhBtn_Click"/>
-        <Button x:Name="PiBtn" Content="π" Grid.Row="8" Grid.Column="0" Click="PiBtn_Click"/>
+        <Button x:Name="ExpBtn" Content="Exp" Grid.Row="8" Grid.Column="0" Click="ExpBtn_Click"/>
         <Button x:Name="LnBtn" Content="ln" Grid.Row="4" Grid.Column="1" Click="LnBtn_Click"/>
         <Button x:Name="SinBtn" Content="sin" Grid.Row="5" Grid.Column="1" Click="SinBtn_Click"/>
         <Button x:Name="CosBtn" Content="cos" Grid.Row="6" Grid.Column="1" Click="CosBtn_Click"/>
@@ -53,7 +53,8 @@
         <Button x:Name="SevenBtn" Content="7" Grid.Row="5" Grid.Column="4" Click="NumberInput_Click"/>
         <Button x:Name="FourBtn" Content="4" Grid.Row="6" Grid.Column="4" Click="NumberInput_Click"/>
         <Button x:Name="OneBtn" Content="1" Grid.Row="7" Grid.Column="4" Click="NumberInput_Click"/>
-        <Button x:Name="ZeroBtn" Content="0" Grid.Row="8" Grid.Column="4" Grid.ColumnSpan="2" Click="NumberInput_Click"/>
+        <Button x:Name="PiBtn" Content="π" Grid.Row="8" Grid.Column="4" Click="PiBtn_Click"/>
+        <Button x:Name="ZeroBtn" Content="0" Grid.Row="8" Grid.Column="5" Click="NumberInput_Click"/>
         <Button x:Name="CEBtn" Content="CE" Grid.Row="4" Grid.Column="5" Click="CEBtn_Click"/>
         <Button x:Name="EightBtn" Content="8" Grid.Row="5" Grid.Column="5" Click="NumberInput_Click"/>
         <Button x:Name="FiveBtn" Content="5" Grid.Row="6" Grid.Column="5" Click="NumberInput_Click"/>
